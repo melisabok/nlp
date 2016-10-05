@@ -36,6 +36,7 @@ class NaiveBayes:
     """A Naive Bayes model for text classification."""
 
     def __init__(self):
+        
         # Vocabulary is a set that stores every word seen in the training data
         self.vocab = set()
 
@@ -213,24 +214,16 @@ class NaiveBayes:
         confusion_matrix = { POS_LABEL: defaultdict(int),
                             NEG_LABEL: defaultdict(int) }
 
-        with open('wrong_classifications.csv', 'w') as wrong_doc:
-            pos_path = os.path.join(TEST_DIR, POS_LABEL)
-            neg_path = os.path.join(TEST_DIR, NEG_LABEL)
-            for (p, label) in [ (pos_path, POS_LABEL), (neg_path, NEG_LABEL) ]:
-                filenames = os.listdir(p)
-                for f in filenames:
-                    with open(os.path.join(p,f),'r') as doc:
-                        content = doc.read()
-                        bow = tokenize_doc(content)
-                        predicted_label = self.classify(bow, alpha)
-                        confusion_matrix[label][predicted_label] += 1
-                        if(predicted_label != label):
-                            wrong_doc.write(content)
-                            wrong_doc.write('\n')
-                            wrong_doc.write(str(bow))
-                            wrong_doc.write('\n')
-                            wrong_doc.write(predicted_label)
-                            wrong_doc.write('\n')
+        pos_path = os.path.join(TEST_DIR, POS_LABEL)
+        neg_path = os.path.join(TEST_DIR, NEG_LABEL)
+        for (p, label) in [ (pos_path, POS_LABEL), (neg_path, NEG_LABEL) ]:
+            filenames = os.listdir(p)
+            for f in filenames:
+                with open(os.path.join(p,f),'r') as doc:
+                    content = doc.read()
+                    bow = tokenize_doc(content)
+                    predicted_label = self.classify(bow, alpha)
+                    confusion_matrix[label][predicted_label] += 1
                             
             true_positive = confusion_matrix[POS_LABEL][POS_LABEL]
             true_negative = confusion_matrix[NEG_LABEL][NEG_LABEL]
